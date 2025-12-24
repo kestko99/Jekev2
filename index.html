@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rbxscan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            color: #ffffff;
+            background: #000000;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            background: #000000;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+        }
+
+        .hero-section {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 3rem 2% 2rem;
+            text-align: center;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #888888;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .main-grid {
+            max-width: 1600px;
+            margin: 0 auto 4rem;
+            padding: 0 2%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .left-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            height: 420px;
+            width: 100%;
+        }
+
+        .info-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 25px 80px rgba(255, 255, 255, 0.08);
+            transform: translateY(-8px);
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+
+        .card-text {
+            color: #b0b0b0;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: auto;
+            flex-grow: 1;
+        }
+
+        .compile-btn {
+            background: linear-gradient(135deg, #ffffff, #d0d0d0);
+            color: #000000;
+            border: none;
+            padding: 1.4rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 20px;
+            cursor: move;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 12px 40px rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+            margin-top: auto;
+            width: 100%;
+            text-align: center;
+        }
+
+        .compile-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .compile-btn:hover::before {
+            left: 100%;
+        }
+
+        .compile-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(255, 255, 255, 0.25);
+        }
+
+        .right-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .video-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            height: 420px;
+            width: 100%;
+        }
+
+        .video-wrapper:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 35px 100px rgba(255, 255, 255, 0.08);
+        }
+
+        .video-container {
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .wide-feature {
+            grid-column: 1;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.6;
+            color: #b0b0b0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 4rem 3.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.4s ease;
+        }
+
+        .wide-feature:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 25px 80px rgba(255, 255, 255, 0.08);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: -400px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #000000;
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            min-width: 300px;
+        }
+
+        .notification.show {
+            right: 20px;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex: 1;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            animation: checkPop 0.4s ease;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .notification-close:hover {
+            background: rgba(0, 0, 0, 0.15);
+            color: #000;
+        }
+
+        @keyframes checkPop {
+            0% { transform: scale(0) rotate(-180deg); }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        @media (min-width: 769px) {
+            .main-grid {
+                grid-template-columns: 1.4fr 1.6fr;
+                gap: 2.5rem;
+            }
+            
+            h1 {
+                font-size: 6rem;
+            }
+            
+            .hero-section {
+                padding: 4rem 2% 2rem;
+            }
+            
+            .info-card, .video-wrapper {
+                height: 500px;
+                padding: 3.5rem 2.5rem;
+            }
+            
+            .card-title {
+                font-size: 2.4rem;
+            }
+            
+            .compile-btn {
+                padding: 1.6rem 4rem;
+                font-size: 1.35rem;
+            }
+            
+            .wide-feature {
+                font-size: 2rem;
+                padding: 4rem 3.5rem;
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 2rem 4% 1.5rem;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .main-grid {
+                padding: 0 4%;
+                gap: 1.5rem;
+            }
+
+            .info-card, .video-wrapper {
+                height: 380px;
+                padding: 2rem;
+            }
+
+            .wide-feature {
+                font-size: 1.6rem;
+                padding: 3rem 2.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .card-title {
+                font-size: 1.6rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .compile-btn {
+                padding: 1.2rem 2rem;
+                font-size: 1.1rem;
+            }
+
+            .notification {
+                right: -350px;
+                min-width: 260px;
+                font-size: 0.95rem;
+                padding: 0.9rem 1.2rem;
+            }
+
+            .notification.show {
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    
+    <div class="content">
+        <div class="hero-section">
+            <p class="hero-subtitle">Compile your avatar templates with ease, with this brand new bookmark based system</p>
+            <h1>Template Exporter</h1>
+        </div>
+
+        <div class="main-grid">
+            <div class="left-content">
+                <div class="info-card">
+                    <h2 class="card-title">How It Works</h2>
+                    <p class="card-text">
+                        Simply drag the button below to your bookmark bar. Then head over to your ROBLOX avatar page and click the bookmark to instantly copy all your avatar templates to clipboard as JSON.
+                    </p>
+                    <a href="#" class="compile-btn" id="compileBtn" draggable="true">
+                        Compile Item
+                    </a>
+                </div>
+            </div>
+
+            <div class="right-content">
+                <div class="video-wrapper">
+                    <div class="video-container">
+                        <video controls>
+                            <source src="tutorial.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wide-feature">
+                Copy your avatar templates in seconds with our innovative bookmark-based system!
+            </div>
+        </div>
+
+        <footer style="text-align: center; padding: 2rem 5% 3rem; color: #666; font-size: 0.85rem; margin-top: auto;">
+            © 2025 rbxscan. All rights reserved.
+        </footer>
+    </div>
+
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <span class="notification-icon">✓</span>
+            <span id="notificationText">Copied to clipboard!</span>
+        </div>
+        <button class="notification-close" id="notificationClose">×</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 50,
+                    density: {
+                        enable: true,
+                        value_area: 1200
+                    }
+                },
+                color: {
+                    value: ['#ffffff', '#a0a0a0', '#888888']
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.25,
+                    random: true,
+                    anim: {
+                        enable: false
+                    }
+                },
+                size: {
+                    value: 4,
+                    random: true,
+                    anim: {
+                        enable: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 180,
+                    color: '#ffffff',
+                    opacity: 0.15,
+                    width: 1.2
+                },
+                move: {
+                    enable: true,
+                    speed: 1.2,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
+                    },
+                    onclick: {
+                        enable: false
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 160,
+                        line_linked: {
+                            opacity: 0.4
+                        }
+                    }
+                }
+            },
+            retina_detect: true
+        });
+
+        const compileBtn = document.getElementById('compileBtn');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const notificationClose = document.getElementById('notificationClose');
+        let notificationTimeout;
+
+        // EMBEDDED BOOKMARKLET - NO FILE DEPENDENCY
+        const bookmarkletCode = `javascript:(function(){let templates=[];document.querySelectorAll('[data-template-id]').forEach(el=>{let id=el.dataset.templateId;let name=el.querySelector('.template-name')?.textContent||'Unknown';let img=el.querySelector('img')?.src||'';templates.push({id:id,name:name,image:img})});let json=JSON.stringify(templates,null,2);navigator.clipboard.writeText(json).then(()=>{alert('✅ '+templates.length+' templates copied to clipboard!')}).catch(()=>{prompt('Copy this JSON:',json)})})();`;
+
+        function showNotification(message = 'Copied to clipboard!') {
+            clearTimeout(notificationTimeout);
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            notificationTimeout = setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        function hideNotification() {
+            clearTimeout(notificationTimeout);
+            notification.classList.remove('show');
+        }
+
+        notificationClose.addEventListener('click', hideNotification);
+
+        compileBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            try {
+                await navigator.clipboard.writeText(bookmarkletCode);
+                showNotification('Bookmarklet copied! Drag to bookmark bar.');
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = bookmarkletCode;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Bookmarklet copied! Drag to bookmark bar.');
+            }
+        });
+    </script>
+</body>
+</html>
